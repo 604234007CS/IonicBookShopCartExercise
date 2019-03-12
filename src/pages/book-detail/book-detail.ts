@@ -82,10 +82,10 @@ export class BookDetailPage {
     localStorage.setItem('numItem', numItem);
     this.numItem=Number(numItem);
     total=Number(localStorage.getItem('total'));
+    
     total=total+price;
     localStorage.setItem('total', total);
-} 
- 
+    }
 
   goBack() {
     this.navCtrl.pop();

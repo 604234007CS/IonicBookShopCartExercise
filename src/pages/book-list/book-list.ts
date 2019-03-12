@@ -79,26 +79,26 @@ export class BookListPage {
     var total;
     if (localStorage.getItem('ShopCart')==null ||
     (localStorage.getItem('ShopCart')==='undefined')){
-    ShopCart=[];
-    ShopCart.push({
-    bookid: bookId,
-    title: title,
-    quatity: 1,
-    price: price
-    });
+      ShopCart=[];
+      ShopCart.push({
+        bookid: bookId,
+        title: title,
+        quatity: 1,
+        price: price
+      });
     localStorage.setItem('ShopCart', JSON.stringify(ShopCart));
     }else{
-    ShopCart=JSON.parse(localStorage.getItem('ShopCart'));
-    var books=ShopCart.filter(book => ( book.bookid === bookId));
+      ShopCart=JSON.parse(localStorage.getItem('ShopCart'));
+      var books=ShopCart.filter(book => ( book.bookid === bookId));
     if (books.length==0){
-    ShopCart.push({
-    bookid: bookId,
-    title: title,
-    quatity: 1,
-    price: price
-    });
+      ShopCart.push({
+        bookid: bookId,
+        title: title,
+        quatity: 1,
+        price: price
+      });
     }else{
-    ShopCart.filter(book => ( book.bookid === bookId))[0].quatity=ShopCart.filter(book =>
+      ShopCart.filter(book => ( book.bookid === bookId))[0].quatity=ShopCart.filter(book =>
     ( book.bookid === bookId))[0].quatity+1;
     }
     localStorage.setItem('ShopCart', JSON.stringify(ShopCart));
@@ -108,10 +108,10 @@ export class BookListPage {
     localStorage.setItem('numItem', numItem);
     this.numItem=Number(numItem);
     total=Number(localStorage.getItem('total'));
+    
     total=total+price;
     localStorage.setItem('total', total);
-} 
-
+    }
 
   
 
@@ -120,22 +120,39 @@ export class BookListPage {
     this.loading.present();
     let search:string=event.target.value;
     this.bookRestProvider.getbooklist().subscribe(
-    data=>{
-    if (search.length>0){
-    this.books=data.filter(book => (book!=null && book.category === this.category &&
-    book.title.toLowerCase().indexOf(search.toLowerCase()) > -1 ));
-    }else{
-    this.books=data.filter(book => (book!=null && book.category === this.category));
+        data=>{
+          if (search.length>0){
+            this.books=data.filter(book => (book!=null && book.category === this.category &&
+            book.title.toLowerCase().indexOf(search.toLowerCase()) > -1 ));
+          }else{
+            this.books=data.filter(book => (book!=null && book.category === this.category));
+          }
+          this.loading.dismissAll();
+        } 
+        ,
+        (err) => {
+          this.loading.dismissAll();
+          console.log(err);
+        }
+      );
     }
-    this.loading.dismissAll();
-    }
-    ,
-    (err) => {
-    this.loading.dismissAll();
-    console.log(err);
-    }
-    );
-    }
+
+    onClear(event){
+      this.loading = this.loadingController.create({ content: "please wait..." });
+      this.loading.present();
+      this.bookRestProvider.getbooklist().subscribe(
+          data=>{
+      
+          this.books=data.filter(book => (book!=null && book.category === this.category));
+          this.loading.dismissAll();
+          }
+          ,
+          (err) => {
+            this.loading.dismissAll();
+            console.log(err);
+          }
+        );
+      }
 
   onCancel(event){
     this.loading = this.loadingController.create({ content: "please wait..." });
